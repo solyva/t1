@@ -2,8 +2,6 @@
 <head>
 <link rel="stylesheet" type="text/css" href="https://tiles.ctbto.org/static/leaflet-1.3.1/leaflet.css" />
 <script src="https://tiles.ctbto.org/static/leaflet-1.3.1/leaflet-src.js"></script>
-<script src="https://tiles.ctbto.org/static/leaflet-1.3.1/Leaflet.VectorGrid.bundled.js"></script>
-<script src="md.js"></script>
 <script src="https://tiles.ctbto.org/static/map.js"></script>
 </head>
 <body>
@@ -44985,87 +44983,75 @@ var baseUrl="https://tiles.ctbto.org";
 var map = ctbto_map(
   {
     mapConfig: {
-	  layers: {
-		baseLayers: {
-		  "World": {
-			urlTemplate: baseUrl + "/styles/world/{z}/{x}/{y}.png"
-		  }
-		},
-		overlays: {
-		  "Borders": {
-			urlTemplate: baseUrl + "/styles/borders_countries_places/{z}/{x}/{y}.png",
-			wrap: true
-		  },
-		  "All Stations": {
-			urlTemplate: baseUrl + "/styles/all_stations/{z}/{x}/{y}.png",
-			wrap: true
-		  }
-		}
-	  }
+      layers: {
+        baseLayers: {
+          "World": {
+            urlTemplate: baseUrl + "/styles/world/{z}/{x}/{y}.png"
+          }
+        },
+        overlays: {
+          "Borders": {
+            urlTemplate: baseUrl + "/styles/borders_countries_places/{z}/{x}/{y}.png",
+            wrap: true
+          },
+          "All Stations": {
+            urlTemplate: baseUrl + "/styles/all_stations/{z}/{x}/{y}.png",
+            wrap: true
+          }
+        }
+      }
     },
-	zoomControl: true,
-	layersControl: true,
-	scaleControl: true,
-	minZoom: 2,
-	maxZoom: 8
+    zoomControl: true,
+    layersControl: true,
+    scaleControl: true,
+    minZoom: 2,
+    maxZoom: 8
   }
 );
 
- function createLayer() {
-        var vg = L.vectorGrid.slicer(alaskAndHawaiiCollection,
-            {
-                rendererFactory: L.svg.tile,
-                vectorTileLayerStyles: {
-                    sliced: function(properties, zoom) {
-                        var mouseOutStyle = {
-					        weight: 1,
-					        color: 'white',
-					        opacity: 1,
-					        fill: true,
-					        radius: 4,
-					        'fillColor': 'red',
-					        'fillOpacity': 0.4
-					    };
-                        var style =
-                            {
-                                weight: 1,
-                                color: 'white',
-                                opacity: 1,
-                                fillColor: 'transparent',
-                                fill: true,
-                                radius: 4,
-                                fillOpacity: 1
-                            };
-                        if (properties.id == 25901) {
-                            return mouseOutStyle;
-                        }
-                        return style;
-                    }
-                },
-                interactive: true,
-                getFeatureId: function(f) {
-                    return f.properties.id;
-                }
-            });
-		var tooltip;
-        vg.on('mouseover', function(e) {
-                tooltip = L.tooltip()
-                    .setContent(e.layer.properties.id)
-                    .setLatLng(e.latlng);
-                tooltip.addTo(map);
-            
-        });
-        vg.on('mouseout', function (e) {
-            if (tooltip) {
-                tooltip.removeFrom(map);
-                tooltip=null;
-            }});
-        return vg;
+var tsunamiWarningList = [
+        {code: 17, name: 'Australia', signedOn: '2008-09-12', institution: 'Joint Australian Tsunami Warning Centre'},
+        {code: 204, name: 'Russian Federation', signedOn: '2013-10-03',  institution: 'Geophysical Survey of the Russian Academy of Sciences'},
+        {code: 85, name: 'France', signedOn: '2010-11-18',  institution: 'Centre national d\'alerte aux tsunamis'},
+        {code: 249, name: 'Turkey', signedOn: '2011-03-03',  institution: 'Kandilli Observatory and Earthquake Research Institute'},
+        {code: 126, name: 'Japan', signedOn: '2008-08-11',  institution: 'Northwest Pacific Tsunami Advisory Center(NWPTAC)'},
+        {code: 202, name: 'Republic of Korea', signedOn: '2012-10-31', institution: 'Korea Meteorological Administration'},
+        {code: 116, name: 'Indonesia', signedOn: '2008-11-10', institution: 'Indonesia Meteorological and Geophysical Agency (BMG)'},
+        {code: 153, name: 'Malaysia', signedOn: '2011-08-18', institution: 'Malaysian Meteorological Department'},
+        {code: 240, name: 'Thailand', signedOn:'2008-10-16', institution: 'Thai Meteorological Department'},
+        {code: 196, name: 'Philippines', signedOn:'2008-09-12', institution: 'Philippine Institute of Volcanology and Seismology'},
+        {code: 25901, name: 'USA - Hawaii', signedOn:'2009-03-23', institution: 'West Coast/Alaska Tsunami Warning Center'},
+        {code: 25902, name: 'USA - Alaska', signedOn:'2008-10-08', institution: 'West Coast/Alaska Tsunami Warning Center'},
+        {code: 97, name: 'Greece', signedOn:'2014-07-04', institution: 'Institute of Geodynamics, National Observatory of Athens'},
+        {code: 171, name: 'Myanmar', signedOn:'2014-10-10', institution: 'National Earthquake Data Center, Departement of Meteorology And Hydrology'},
+        {code: 199, name: 'Portugal', signedOn:'2016-01-14', institution: 'The Instituto Portugues do Mar e da Atmosfera, I.P.'},
+        {code: 150, name: 'Madagascar', signedOn:'2019-03-08', institution: 'Institut et Observatoire de Geophysique d\'Antananarivo (IOGA)'},
+        {code: 122, name: 'Italy', signedOn:'2019-09-21', institution: 'Istituto Nazionale di Geofisica e Vulcanologia (INGV)'}
+    ];
 
+ function createLayer() {
+        var myStyle = {
+            "color": "#ff7800",
+            "weight": 5,
+            "opacity": 0.65
+        };
+        var item = tsunamiWarningList.filter(function (country) { return country.code === alaskAndHawaiiCollection.features[0].properties.id });
+        var t1 = '<div class=\"tsunamiAgreementPopup\">' +
+                        '<div class=\"tsunamiAgreementPopup countryName\">' + item[0].name + '</div>' +
+                        '<hr style=\'margin: 0; padding: 0;\'>' +
+                        '<div class=\"tsunamiAgreementPopup signed\">Agreement signed on: '+ item[0].signedOn +'</div>' +
+                        '<div class=\"tsunamiAgreementPopup institution\">Name of Organization:'+ item[0].institution +'</div>';
+        L.geoJSON(alaskAndHawaiiCollection.features[0], myStyle).bindTooltip(t1).addTo(map);
+        item = tsunamiWarningList.filter(function (country) { return country.code === alaskAndHawaiiCollection.features[1].properties.id });
+        var t2 = '<div class=\"tsunamiAgreementPopup\">' +
+                        '<div class=\"tsunamiAgreementPopup countryName\">' + item[0].name + '</div>' +
+                        '<hr style=\'margin: 0; padding: 0;\'>' +
+                        '<div class=\"tsunamiAgreementPopup signed\">Agreement signed on: '+ item[0].signedOn +'</div>' +
+                        '<div class=\"tsunamiAgreementPopup institution\">Name of Organization:'+ item[0].institution +'</div>';
+        L.geoJSON(alaskAndHawaiiCollection.features[1], myStyle).bindTooltip(t2).addTo(map);
     }
-    var vg = createLayer();
-    vg.addTo(map);
-    vg.bringToFront();
+   createLayer();
+    
   
 
 </script>
