@@ -1,0 +1,15 @@
+#theSpan{display:table-caption;}
+
+.tsunamiAgreementPopup {
+   overflow-wrap: break-word;
+    word-break: break-word;
+    word-wrap: break-word;
+    max-width: 800px;
+    width: 300px;
+}
+
+.tsunamiAgreementPopup.institution {
+    white-space:initial;
+    word-break: break-word;
+    word-wrap: break-word;
+}
