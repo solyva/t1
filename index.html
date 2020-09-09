@@ -1,95 +1,19 @@
+<!DOCTYPE html>
 <html>
-<head>
-<link rel="stylesheet" type="text/css" href="https://tiles.ctbto.org/static/leaflet-1.3.1/leaflet.css" />
-<script src="https://tiles.ctbto.org/static/leaflet-1.3.1/leaflet-src.js"></script>
- <script type="text/javascript">
-        if(/MSIE \d|Trident.*rv:/.test(navigator.userAgent)) {
-            document.write('<script src="fetch.js"><\/script>');
-            document.write('<script src="promise.js"><\/script>');
-        }
-    </script>
-<script src="https://tiles.ctbto.org/static/leaflet-1.3.1/Leaflet.VectorGrid.bundled.js"></script>
-<script src="https://tiles.ctbto.org/static/map.js"></script>
-</head>
-<body>
-<div id="map" style="width:100%; height:100%"></map>
-<script>
-var baseUrl="https://tiles.ctbto.org";
-var map = ctbto_map(
-  {
-    mapConfig: {
-      layers: {
-        baseLayers: {
-          "World": {
-            urlTemplate: baseUrl + "/styles/world/{z}/{x}/{y}.png"
-          }
-        },
-        overlays: {
-          "Borders": {
-            urlTemplate: baseUrl + "/styles/borders_countries_places/{z}/{x}/{y}.png",
-            wrap: true
-          },
-          "All Stations": {
-            urlTemplate: baseUrl + "/styles/all_stations/{z}/{x}/{y}.png",
-            wrap: true
-          }
-        },
-        vectorLayers: {
-          "All States": {
-            "urlTemplate": baseUrl + "/data/un_borders/{z}/{x}/{y}.pbf",
-            "sublayers": {
-                "un_borders": {
-                    "styler": function  (properties, zoom) {
-                        var style =
-                        {
-                            weight: 1,
-                            color: 'white',
-                            opacity: 1,
-                            fillColor: 'transparent',
-                            fill: true,
-                            radius: 4,
-                            fillOpacity: 1
-                        };
-                        if (properties.STATUS == "Member State") {
-                          style.fillColor = 'green';
-                        } else { 
-                          style.fillColor = 'red';
-                        }
-                        return style;
-                    }
-                },
-            },
-            "key_property": "ADM0_NAME",
-            "bindings": {
-                "un_borders": "Borders"
-            },
-            options: {}
-          }
-        }
-      }
-    },
-    zoomControl: true,
-    layersControl: true,
-    scaleControl: true,
-    minZoom: 2,
-    maxZoom: 8,
-    mouseoverHandler: function (L, e, latlng) {
-        return L
-            .tooltip()
-            .setContent(e.layer.properties.ADM0_NAME + " (" + e.layer.properties.STATUS + ")")
-            .setLatLng(latlng);
-    },
-    clickHandler: function(L, e, latlng) {
-        var content = [];
-        for (key in e.layer.properties) {
-          content.push(key + ": " + e.layer.properties[key]);
-        }
-        return L.popup({className: "custom-popup"})
-            .setContent(content.join("<br>"))
-            .setLatLng(latlng);
-    }
-  }
-);
-</script>
-</body>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>repl.it</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <script src="script.js"></script>
+    <div id="grid2">
+     <span id="theSpan">Product Support</span>
+</div>
+
+<div class="tsunamiAgreementPopup">
+<div class="tsunamiAgreementPopup institution">vljvnwlefjvb lwkfnqewrlgknqwl qwe;kfjqwlekfj wq;ekfjlweqkfqwelfjqwelfijqwelfkj </div>
+</div>
+  </body>
 </html>
